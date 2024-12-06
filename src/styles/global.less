@@ -1,0 +1,52 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+.generate-mp(@index) when (@index > 0) {
+  @value: (@index * 2);
+
+  .ml-@{value} {
+    /* 这里使用 @value + 1px有问题，中间会出空格问题 */
+    margin-left: @value * 1px;
+  }
+  .mt-@{value} {
+    margin-top: @value* 1px;
+  }
+  .mr-@{value} {
+    margin-right: @value* 1px;
+  }
+  .mb-@{value} {
+    margin-bottom: @value* 1px;
+  }
+  .mm-@{value} {
+    margin: @value* 1px;
+  }
+
+  .pl-@{value} {
+    padding-left: @value* 1px;
+  }
+  .pt-@{value} {
+    padding-top: @value* 1px;
+  }
+  .pr-@{value} {
+    padding-right: @value* 1px;
+  }
+  .pb-@{value} {
+    padding-bottom: @value* 1px;
+  }
+  .pp-@{value} {
+    padding: @value* 1px;
+  }
+
+  .generate-mp(@index - 1);
+}
+
+.generate-mp(10); // 生成 10 个样式类，间隔为 2px
+
+.is-selected {
+  background: #f5f5f5;
+  color: red;
+}
