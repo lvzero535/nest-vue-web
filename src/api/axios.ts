@@ -1,5 +1,5 @@
 import { useUserStoreWithOut } from '@/store/modules/user';
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import axios, { AxiosResponse } from 'axios';
 import { RequestOptions, ResResult } from './types';
 import { SUCCESS_MSG, CODE_TO_MSG } from './const';
@@ -47,11 +47,19 @@ export async function request<T>(
 ): Promise<ResResult<T> | AxiosResponse<ResResult<T>>> {
   const response = await service.request<ResResult<T>>(config);
 
-  const { msg } = response.data;
+  const { msg, code } = response.data;
   response.data.success = SUCCESS_MSG === msg;
 
   if (config.method !== 'get' && response.data.success) {
     message.success('操作成功');
+  }
+
+  if (!response.data.success) {
+    Modal.error({
+      title: '错误提示',
+      closable: true,
+      content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
+    });
   }
 
   if (isReturnOriginData) {

@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 
 export interface BaseModel {
-  id?: number;
+  id?: string;
   createAt?: string;
   updateAt?: string;
 }
@@ -14,14 +14,14 @@ export interface PageQuery {
   search?: string;
 }
 
-export interface ListResult<T = any> {
+export interface ListResult<T = unknown> {
   total: number;
   list: T[];
 }
 
-export type ResListResult<T = any> = ResResult<ListResult<T>>;
+export type ResListResult<T = unknown> = ResResult<ListResult<T>>;
 
-export interface ResResult<T = any> {
+export interface ResResult<T = unknown> {
   code?: number;
   data: T;
   msg?: string;

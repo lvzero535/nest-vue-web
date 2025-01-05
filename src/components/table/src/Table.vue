@@ -1,17 +1,20 @@
 <template>
-  <div class="ld-table-container">
-    <div class="toolbar-wrap" v-if="isToolbar">
-      <slot name="toolbar"></slot>
+  <div class="x-table-container">
+    <div class="toolbar-wrap" v-if="toolbar">
+      <!-- <slot name="toolbar"></slot> -->
+      <XToolbar v-bind="toolbar" />
     </div>
-    <div class="table-wrap" :class="{ 'no-toolbar': !isToolbar }">
+    <div class="table-wrap" :class="{ 'no-toolbar': !toolbar }">
       <Table
         :scroll="{ y: 'max-content' }"
-        v-bind="$attrs"
         :loading="loading"
         :data-source="data"
         :columns="tableColumns"
+        rowKey="id"
         size="middle"
-        :pagination="pagination"
+        :row-selection="rowSelection"
+        v-bind="$attrs"
+        :pagination="paginationCpt"
       >
         <template #headerCell="{ column }">
           <template v-if="column.dataIndex === 'filterColumns'">
@@ -24,7 +27,7 @@
                       <Checkbox
                         :checked="!item.hidden"
                         @change="
-                          (checked) => {
+                          (checked: SafeAny) => {
                             item.hidden = !checked.target.checked;
                           }
                         "
@@ -38,8 +41,29 @@
           </template>
           <slot v-else name="headerCell" v-bind="column"></slot>
         </template>
+        <template #bodyCell="{ column, value, record }">
+          <template v-if="isString(column.cellContent)">
+            <slot v-bind="{ column, value, record }" :name="column.cellContent">
+              {{ value }}
+            </slot>
+          </template>
+          <template v-else-if="isVNode(column.cellContent)">
+            <component
+              :is="column.cellContent"
+              v-bind="{ column, value, record }"
+            >
+              {{ value }}
+            </component>
+          </template>
+          <template v-else-if="isFunction(column.cellContent)">
+            <component
+              :is="handleCellContent(column.cellContent(value, record, column))"
+            >
+            </component>
+          </template>
+        </template>
         <template
-          v-for="(_, slotName) in omit($slots, ['toolbar', 'headerCell'])"
+          v-for="(_, slotName) in omit($slots, ['headerCell', 'bodyCell'])"
           :key="slotName"
           v-slot:[slotName]="values"
         >
@@ -58,16 +82,28 @@ import {
   PropType,
   reactive,
   ref,
-  useSlots,
   watchEffect,
+  inject,
+  isVNode,
+  VNode,
+  h,
 } from 'vue';
 import { ListResult, PageQuery } from '@/api/types';
-import { isFunction, noop, omit } from 'lodash-es';
-import { LdTableMethods, CustomTableColumn } from './types';
+import { isFunction, isString, noop, omit } from 'lodash-es';
+import { XTableMethods, XTableColumn } from './types';
+import { XToolbar } from '@/components/toolbar';
+import { X_TABLE_HOOK_TOKEN } from './token';
+import { useSelection } from './hooks/useSelection';
+
+const {
+  selection,
+  columns,
+  toolbar: toolbarProps,
+} = inject(X_TABLE_HOOK_TOKEN)!;
 
 const props = defineProps({
   register: {
-    type: Function as PropType<(methods: LdTableMethods) => void>,
+    type: Function as PropType<(methods: XTableMethods) => void>,
     default: noop,
   },
   fetch: {
@@ -82,12 +118,12 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  columns: {
-    type: Array as PropType<CustomTableColumn[]>,
-    required: true,
-  },
 });
-
+const tableMethods: XTableMethods = {
+  loadData: () => {
+    getTableData(pageQuery);
+  },
+};
 const emits = defineEmits<{
   (
     e: 'change',
@@ -96,7 +132,7 @@ const emits = defineEmits<{
       pageSize: number;
     },
   ): void;
-  (e: 'register', methods: LdTableMethods): void;
+  (e: 'register', methods: XTableMethods): void;
 }>();
 
 const total = ref(0);
@@ -105,12 +141,18 @@ const pageQuery = reactive({
   page: 1,
   pageSize: 10,
 });
-const data = ref<any[]>([]);
-const tableColumns = ref<CustomTableColumn[]>([]);
-const filterColumns = ref<CustomTableColumn[]>([]);
+const data = ref<unknown[]>([]);
+const tableColumns = ref<XTableColumn[]>([]);
+const filterColumns = ref<XTableColumn[]>([]);
+
+const { rowSelection, toolbar } = useSelection(
+  tableMethods,
+  selection,
+  toolbarProps,
+);
 
 watchEffect(() => {
-  filterColumns.value = props.columns?.map((item) => {
+  filterColumns.value = columns.map((item) => {
     return {
       hidden: false,
       ...item,
@@ -132,11 +174,7 @@ watchEffect(() => {
     ]);
 });
 
-const isToolbar = computed(() => {
-  return useSlots().toolbar !== undefined;
-});
-
-const pagination = computed(() => {
+const paginationCpt = computed(() => {
   return {
     showQuickJumper: true,
     showSizeChanger: true,
@@ -152,6 +190,19 @@ const pagination = computed(() => {
   };
 });
 
+const handleCellContent = (cellContent: string | VNode) => {
+  if (isVNode(cellContent)) {
+    return cellContent;
+  }
+
+  return h(
+    'span',
+    {
+      class: 'cell-content',
+    },
+    cellContent,
+  );
+};
 async function getTableData(pageQuery: PageQuery) {
   loading.value = true;
   const listData = await props.fetch?.(pageQuery);
@@ -166,20 +217,12 @@ onMounted(() => {
   }
 });
 
-emits('register', {
-  loadData: () => {
-    getTableData(pageQuery);
-  },
-});
+emits('register', tableMethods);
 
-defineExpose({
-  loadData: () => {
-    getTableData(pageQuery);
-  },
-});
+defineExpose(tableMethods);
 </script>
 <style lang="less" scoped>
-.ld-table-container {
+.x-table-container {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -190,8 +233,6 @@ defineExpose({
   }
 
   .toolbar-wrap {
-    display: flex;
-    justify-content: space-between;
     margin-bottom: 8px;
     height: 32px;
   }

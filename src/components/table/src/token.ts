@@ -1,4 +1,5 @@
-// import { InjectionKey } from "vue";
-// import { LdTableRef } from "./types";
+import { InjectionKey } from 'vue';
+import { XTableHookProps } from './types';
 
-// export const LD_TABLE_HOOK_TOKEN: InjectionKey<LdTableRef> = Symbol('LD_TABLE_HOOK_TOKEN');
+export const X_TABLE_HOOK_TOKEN: InjectionKey<XTableHookProps> =
+  Symbol('X_TABLE_HOOK_TOKEN');

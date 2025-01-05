@@ -3,7 +3,8 @@ import { outsideLayoutRoutes } from './outsideLayout';
 import { diagram, welcome } from './dashboard';
 import { basicFormRoute, dynamicFormRoute, modal } from './demos';
 import { demoItemsRoute } from './demos-items';
-import { roleRoute, userRoute } from './system';
+import { deptRoute, menuRoute, roleRoute, userRoute } from './system';
+import { componentRoutes } from './components';
 
 export const rootRoute: RouteRecordRaw = {
   path: '/',
@@ -41,6 +42,7 @@ export const rootRoute: RouteRecordRaw = {
           },
           children: [basicFormRoute, dynamicFormRoute],
         },
+        ...componentRoutes,
         demoItemsRoute,
       ],
     },
@@ -51,7 +53,7 @@ export const rootRoute: RouteRecordRaw = {
         title: '系统管理',
         icon: 'ep:setting',
       },
-      children: [userRoute, roleRoute],
+      children: [userRoute, roleRoute, deptRoute, menuRoute],
     },
   ],
 };

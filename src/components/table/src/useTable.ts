@@ -1,17 +1,20 @@
-import { LdTableMethods } from './types';
-import { ref } from 'vue';
+import { X_TABLE_HOOK_TOKEN } from './token';
+import { XTableHookProps, XTableMethods } from './types';
+import { provide, ref } from 'vue';
 
-export function useTable() {
-  const tableMethods = ref<LdTableMethods>();
+export function useTable(option: XTableHookProps) {
+  const tableMethods = ref<XTableMethods>();
 
-  const register = (methods: LdTableMethods) => {
+  provide(X_TABLE_HOOK_TOKEN, option);
+
+  const register = (methods: XTableMethods) => {
     tableMethods.value = methods;
-    if (!tableMethods) {
+    if (!tableMethods.value) {
       console.error('methods is null');
     }
   };
 
-  const methods: LdTableMethods = {
+  const methods: XTableMethods = {
     loadData: () => {
       tableMethods.value?.loadData?.();
     },

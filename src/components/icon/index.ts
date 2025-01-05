@@ -1,9 +1,11 @@
 import { h } from 'vue';
 import Icon from './src/Icon.vue';
+import IconPreview from './src/IconPreview.vue';
+import IconPicker from './src/IconPicker.vue';
 
 export { type DefaultIconsType } from './src/icons.data';
 import { type DefaultIconsType } from './src/icons.data';
-export { Icon };
+export { Icon, IconPreview, IconPicker };
 
 /**
  * 创建一个带有图标的 Vue 组件

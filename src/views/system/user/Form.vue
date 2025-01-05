@@ -15,13 +15,28 @@
     <Form.Item label="密码" name="password">
       <InputPassword v-model:value="formState.password" />
     </Form.Item>
+    <Form.Item label="角色" name="roleIds">
+      <Select
+        mode="tags"
+        :options="options"
+        placeholder="Please select"
+        v-model:value="formState.roleIds"
+      />
+    </Form.Item>
   </Form>
 </template>
 <script lang="ts" setup>
-import { PropType, reactive, ref } from 'vue';
-import { Form, Input, InputPassword, FormInstance } from 'ant-design-vue';
+import { onMounted, PropType, reactive, ref } from 'vue';
+import {
+  Form,
+  Input,
+  InputPassword,
+  FormInstance,
+  Select,
+} from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/es/form';
 import { addUser, updateUser, UserFormModel, UserModel } from '@/api/user';
+import { getRoleList } from '@/api/role';
 
 const props = defineProps({
   userInfo: {
@@ -35,12 +50,31 @@ const formRef = ref<FormInstance>();
 const formState = reactive<UserFormModel>({
   username: props.userInfo?.username || '',
   password: props.userInfo?.password || '',
+  roleIds: props.userInfo?.roles.map((item) => item.id!) || [],
 });
 
 const rules: Record<keyof UserFormModel, Rule[]> = {
   username: [{ required: true, message: '请输入用户名' }],
   password: [{ required: true, message: '请输入密码' }],
+  roleIds: [{ required: true, message: '请选择角色' }],
 };
+
+const options = ref<{ label: string; value: string }[]>([]);
+const getRoleData = async () => {
+  const resp = await getRoleList({
+    page: 1,
+    pageSize: 1000000,
+  });
+  if (resp.success) {
+    options.value = resp.data.list.map((item) => ({
+      label: item.name,
+      value: item.id!,
+    }));
+  }
+};
+onMounted(() => {
+  getRoleData();
+});
 
 const onSubmit = async () => {
   try {

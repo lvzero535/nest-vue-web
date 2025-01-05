@@ -31,7 +31,9 @@ const tabsList = computed(() => Array.from(tabsStore.tabsMap.values()) || []);
 // const activeKey = computed(() => route.path);
 
 const handleEdit: TabsProps['onEdit'] = (path, action) => {
-  action === 'remove' && tabsStore.removeTabs(path as string);
+  if (action === 'remove') {
+    tabsStore.removeTabs(path as string);
+  }
 };
 const handleChange: TabsProps['onChange'] = (path) => {
   if (route.path === path) {

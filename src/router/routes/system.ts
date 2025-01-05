@@ -16,3 +16,21 @@ export const roleRoute: RouteRecordRaw = {
     icon: 'ep:user',
   },
 };
+
+export const deptRoute: RouteRecordRaw = {
+  path: '/system/dept',
+  component: () => import('@/views/system/dept/index.vue'),
+  meta: {
+    title: '部门管理',
+    icon: 'ant-design:cluster-outlined',
+  },
+};
+
+export const menuRoute: RouteRecordRaw = {
+  path: '/system/menu',
+  component: () => import('@/views/system/menu/index.vue'),
+  meta: {
+    title: '菜单管理',
+    icon: 'ant-design:cluster-outlined',
+  },
+};

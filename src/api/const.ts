@@ -13,4 +13,6 @@ export const CODE_TO_MSG: Recordable<string> = {
   503: '服务不可用',
   504: '网关超时',
   505: 'HTTP版本不受支持',
+
+  23505: '当前记录已存在',
 };
