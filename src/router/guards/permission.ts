@@ -5,7 +5,7 @@ import { LoginRoute } from '../routes/outsideLayout';
 
 export default function permissionGuard(router: Router) {
   router.beforeEach(async (to, _from, next) => {
-    if (whiteNameList.includes(to.fullPath)) {
+    if (whiteNameList.includes(to.path)) {
       next();
     } else {
       const user = useUserStore();
@@ -15,7 +15,7 @@ export default function permissionGuard(router: Router) {
         }
         next();
       } else {
-        next({ path: LoginRoute.path });
+        next({ path: LoginRoute.path, query: { redirect: to.path } });
       }
     }
   });

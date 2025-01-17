@@ -2,7 +2,7 @@ import { useUserStoreWithOut } from '@/store/modules/user';
 import { message, Modal } from 'ant-design-vue';
 import axios, { AxiosResponse } from 'axios';
 import { RequestOptions, ResResult } from './types';
-import { SUCCESS_MSG, CODE_TO_MSG } from './const';
+import { SUCCESS_MSG, CODE_TO_MSG, TOKEN_INVALID_CODE } from './const';
 
 const service = axios.create({
   baseURL: '/api',
@@ -12,8 +12,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     const userStore = useUserStoreWithOut();
-    if (userStore.token) {
-      config.headers.Authorization = userStore.token;
+    const token = userStore.token;
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -55,11 +56,28 @@ export async function request<T>(
   }
 
   if (!response.data.success) {
-    Modal.error({
-      title: '错误提示',
-      closable: true,
-      content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
-    });
+    if (TOKEN_INVALID_CODE === code) {
+      const userStore = useUserStoreWithOut();
+      Modal.confirm({
+        title: '警告',
+        closable: true,
+        content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
+        okText: '重新登录',
+        cancelText: '取消',
+        async onOk() {
+          userStore.logout();
+        },
+        onCancel() {
+          userStore.setToken('');
+        },
+      });
+    } else {
+      Modal.error({
+        title: '错误提示',
+        closable: true,
+        content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
+      });
+    }
   }
 
   if (isReturnOriginData) {

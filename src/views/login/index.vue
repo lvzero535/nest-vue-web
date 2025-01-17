@@ -50,14 +50,31 @@
 import { reactive } from 'vue';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { Form, Input, Button, Card, InputPassword } from 'ant-design-vue';
+import { login } from '@/api/auth';
+import { useUserStore } from '@/store/modules/user';
+import { useRouter, useRoute } from 'vue-router';
+const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
 
 const formState = reactive({
-  username: '',
-  password: '',
+  username: 'admin',
+  password: 'Qwer1234',
 });
 
-const handleLogin = () => {
+const handleLogin = async () => {
   console.log('Received values of form: ', formState);
+  const resp = await login(formState);
+  console.log(resp);
+  if (resp.success) {
+    userStore.setToken(resp.data.access_token);
+    let redirect = route.query.redirect as string;
+    if (!redirect) {
+      redirect = '/';
+    }
+    router.push(redirect);
+    return;
+  }
   // 这里可以添加实际的登录逻辑
 };
 </script>
@@ -68,6 +85,7 @@ const handleLogin = () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: #e2e2e2;
 }
 
 .login-form {

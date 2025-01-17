@@ -41,22 +41,22 @@
 
       <!-- 用户信息 -->
       <div class="user-info-wrap ml-16">
-        <Dropdown>
+        <Dropdown :trigger="['click']">
           <Icon class="icon-cls" size="24" icon="ant-design:github-filled" />
           <template #overlay>
-            <Menu>
-              <Menu.Item key="1">
+            <Menu @click="onUserIcon" :items="userItems">
+              <!-- <Menu.Item key="1">
                 <Icon class="mr-4" size="16" icon="ant-design:user-outlined" />
                 <span>个人中心</span>
               </Menu.Item>
-              <Menu.Item key="2">
+              <Menu.Item :key="USER_ICON_KEY.LOGOUT">
                 <Icon
                   class="mr-4"
                   size="16"
                   :icon="'ant-design:logout-outlined'"
                 />
                 <span>退出登录</span>
-              </Menu.Item>
+              </Menu.Item> -->
             </Menu>
           </template>
         </Dropdown>
@@ -70,15 +70,49 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Icon } from '@/components/icon';
+import { hIcon, Icon } from '@/components/icon';
 import { useAppStore } from '@/store/modules/app';
+import { useUserStore } from '@/store/modules/user';
 import { computed } from 'vue';
-import { Dropdown, Menu } from 'ant-design-vue';
+import { Dropdown, Menu, MenuProps, Modal } from 'ant-design-vue';
 import Breadcrumb from './Breadcrumb.vue';
 
 const appStore = useAppStore();
+const userStore = useUserStore();
 const { toggleCollapsed } = appStore;
 const isCollapsed = computed(() => appStore.isCollapsed);
+
+const userItems = [
+  {
+    label: '个人中心',
+    key: '1',
+    icon: hIcon('ant-design:user-outlined'),
+    click() {
+      console.log('个人中心11');
+    },
+  },
+  {
+    label: '退出登录',
+    key: '2',
+    icon: hIcon('ant-design:logout-outlined'),
+    click() {
+      Modal.confirm({
+        title: '提示',
+        closable: true,
+        content: '确认退出登录吗？',
+        // okText: '重新登录',
+        // cancelText: '取消',
+        async onOk() {
+          userStore.logout();
+        },
+      });
+    },
+  },
+];
+
+const onUserIcon: MenuProps['onClick'] = (e) => {
+  e.item.click?.();
+};
 </script>
 <style scoped lang="less">
 .app-header-wrap {
