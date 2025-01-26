@@ -84,7 +84,7 @@ const isCollapsed = computed(() => appStore.isCollapsed);
 
 const userItems = [
   {
-    label: '个人中心',
+    label: `(${userStore.userInfo?.username})详情`,
     key: '1',
     icon: hIcon('ant-design:user-outlined'),
     click() {

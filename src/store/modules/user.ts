@@ -1,19 +1,17 @@
 import { defineStore } from 'pinia';
 import { store } from '@/store';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
-import { rootRoute } from '@/router/routes';
+import { AccountInfoModel, getUserMenus, getUserProfile } from '@/api/user';
+import { generateDynamicRoutes } from '@/router/helper';
 
 export const useUserStore = defineStore(
   'user',
   () => {
     const menus = ref<RouteRecordRaw[]>([]);
+    const userInfo = ref<AccountInfoModel>();
+    const token = ref<string>('');
 
-    const token = ref('');
-    const jwtToken = computed(() => token.value);
-    async function createMenus() {
-      menus.value = rootRoute.children!;
-    }
     const setToken = (val: string) => {
       token.value = val;
     };
@@ -21,6 +19,7 @@ export const useUserStore = defineStore(
     const reset = () => {
       menus.value = [];
       token.value = '';
+      userInfo.value = undefined;
     };
 
     const logout = () => {
@@ -28,13 +27,26 @@ export const useUserStore = defineStore(
       window.location.reload();
     };
 
+    const getUserInfo = async () => {
+      const [profileResp, menusResp] = await Promise.all([
+        getUserProfile(),
+        getUserMenus(),
+      ]);
+      if (profileResp.success && menusResp.success) {
+        userInfo.value = profileResp.data;
+        menus.value = generateDynamicRoutes(menusResp.data.list);
+        console.log('menusResp.data', menus.value);
+      }
+    };
+
     return {
       menus,
-      token: jwtToken,
-      createMenus,
+      token,
+      userInfo,
       setToken,
       reset,
       logout,
+      getUserInfo,
     };
   },
   {

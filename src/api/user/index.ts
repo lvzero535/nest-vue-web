@@ -2,6 +2,7 @@ import { request } from '@/api/axios';
 import { UserFormModel, UserModel } from './types';
 import { ListResult, PageQuery } from '../types';
 export * from './types';
+export * from './account';
 
 export function getUserList(params: PageQuery) {
   return request<ListResult<UserModel>>({

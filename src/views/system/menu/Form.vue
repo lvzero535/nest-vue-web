@@ -109,11 +109,11 @@ const props = defineProps({
 
 const formRef = ref<FormInstance>();
 const treeData = ref<MenuModel[]>([]);
-const pathPrefix = ref<string>(props.deptInfo?.parent?.path ?? '/');
+const pathPrefix = ref<string>(props.deptInfo?.parentId ?? '/');
 
 const formState = reactive<MenuModelForm>({
   name: props.deptInfo?.name || '',
-  parentId: props.deptInfo?.parent?.id ?? '-1',
+  parentId: props.deptInfo?.parentId ?? '-1',
   type: props.deptInfo?.type || MenuTypeEnum.CATALOG,
   order: props.deptInfo?.order || 0,
   path: props.deptInfo?.path,

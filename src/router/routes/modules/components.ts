@@ -1,4 +1,13 @@
 import { RouteRecordRaw } from 'vue-router';
+export const modalRoute: RouteRecordRaw = {
+  path: '/demos/modal',
+  component: () => import('@/views/demos/modal/index.vue'),
+  meta: {
+    title: '弹窗Modal',
+    icon: 'ant-design:alipay-square-filled',
+  },
+};
+
 export const componentButtonsRoute: RouteRecordRaw = {
   path: '/demos/buttons',
   component: () => import('@/views/demos/buttons/index.vue'),
@@ -18,4 +27,4 @@ export const iconsRoute: RouteRecordRaw = {
   },
 };
 
-export const componentRoutes = [componentButtonsRoute, iconsRoute];
+export const componentRoutes = [modalRoute, componentButtonsRoute, iconsRoute];

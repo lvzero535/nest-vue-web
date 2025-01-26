@@ -49,7 +49,7 @@ const formRef = ref<FormInstance>();
 
 const formState = reactive<UserFormModel>({
   username: props.userInfo?.username || '',
-  password: props.userInfo?.password || '',
+  password: props.userInfo?.password || 'a123456',
   roleIds: props.userInfo?.roles.map((item) => item.id!) || [],
 });
 

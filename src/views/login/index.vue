@@ -59,7 +59,7 @@ const userStore = useUserStore();
 
 const formState = reactive({
   username: 'admin',
-  password: 'Qwer1234',
+  password: 'a123456',
 });
 
 const handleLogin = async () => {

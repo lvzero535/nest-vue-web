@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
+
 export const welcome: RouteRecordRaw = {
   path: '/dashboard/welcome',
   component: () => import('@/views/dashboard/welcome/index.vue'),
@@ -7,6 +8,7 @@ export const welcome: RouteRecordRaw = {
     icon: 'ant-design:dashboard-outlined',
   },
 };
+
 export const diagram: RouteRecordRaw = {
   path: '/dashboard/diagram',
   component: () => import('@/views/dashboard/diagram/index.vue'),
@@ -15,3 +17,13 @@ export const diagram: RouteRecordRaw = {
     icon: 'ant-design:bar-chart-outlined',
   },
 };
+
+export default {
+  path: '/dashboard',
+  redirect: welcome.path,
+  meta: {
+    title: 'Dashboard',
+    icon: 'ant-design:home-outlined',
+  },
+  children: [welcome, diagram],
+} as RouteRecordRaw;

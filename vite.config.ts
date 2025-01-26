@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import dynamicImport from 'vite-plugin-dynamic-import';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
       iconDirs: [resolve(__dirname, './src/assets/icons')],
       symbolId: 'svg-icon-[dir]-[name]',
     }),
+    dynamicImport(),
   ],
   resolve: {
     alias: [

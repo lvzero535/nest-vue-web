@@ -4,7 +4,7 @@ import { watch, ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 import { getRouteByPath } from '@/router/helper';
 import router from '@/router';
-import { welcome } from '@/router/routes/dashboard';
+import { welcome } from '@/router/routes/modules/dashboard';
 
 export enum TAB_ACTIONS {
   CLOSE_ALL = 'close-all',
@@ -42,7 +42,7 @@ export const useTabsStore = defineStore(
     function closeTabs(action: TAB_ACTIONS, path: string) {
       const currentActiveRoutePath = router.currentRoute.value.path;
       switch (action) {
-        case TAB_ACTIONS.CLOSE_ALL:
+        case TAB_ACTIONS.CLOSE_ALL: {
           const firstTab = tabsMap.value.get(tabsKey.value[0]);
           tabsMap.value.clear();
           if (firstTab) {
@@ -50,8 +50,9 @@ export const useTabsStore = defineStore(
             router.push(firstTab.path);
           }
           break;
+        }
 
-        case TAB_ACTIONS.CLOSE_OTHER:
+        case TAB_ACTIONS.CLOSE_OTHER: {
           const currentActionRoute = tabsMap.value.get(path);
           tabsMap.value.clear();
           tabsMap.value.set(path, currentActionRoute!);
@@ -62,8 +63,9 @@ export const useTabsStore = defineStore(
           }
 
           break;
+        }
 
-        case TAB_ACTIONS.CLOSE_LEFT:
+        case TAB_ACTIONS.CLOSE_LEFT: {
           const currentIndex = tabsKey.value.indexOf(path);
           if (currentIndex === -1) {
             return;
@@ -79,8 +81,9 @@ export const useTabsStore = defineStore(
           }
 
           break;
+        }
 
-        case TAB_ACTIONS.CLOSE_RIGHT:
+        case TAB_ACTIONS.CLOSE_RIGHT: {
           const currentIndex1 = tabsKey.value.indexOf(path);
           if (currentIndex1 === -1) {
             return;
@@ -95,6 +98,7 @@ export const useTabsStore = defineStore(
             router.push(tabsKey.value[0]);
           }
           break;
+        }
 
         default:
           console.log('action', action);

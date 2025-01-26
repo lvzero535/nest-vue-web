@@ -1,12 +1,4 @@
 import { RouteRecordRaw } from 'vue-router';
-export const modal: RouteRecordRaw = {
-  path: '/demos/modal',
-  component: () => import('@/views/demos/modal/index.vue'),
-  meta: {
-    title: '弹窗Modal',
-    icon: 'ant-design:alipay-square-filled',
-  },
-};
 export const basicFormRoute: RouteRecordRaw = {
   path: '/demos/form/basic-form',
   component: () => import('@/views/demos/form/basic/index.vue'),
@@ -23,3 +15,13 @@ export const dynamicFormRoute: RouteRecordRaw = {
     icon: 'ant-design:arrow-down-outlined',
   },
 };
+
+export default {
+  path: '/demos/form',
+  redirect: basicFormRoute.path,
+  meta: {
+    title: 'Form演示',
+    icon: 'ant-design:account-book-outlined',
+  },
+  children: [basicFormRoute, dynamicFormRoute],
+} as RouteRecordRaw;

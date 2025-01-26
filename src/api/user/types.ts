@@ -7,6 +7,8 @@ export interface UserModel extends BaseModel {
   roles: RoleModel[];
 }
 
+export type AccountInfoModel = Omit<UserModel, 'password'>;
+
 export type UserFormModel = Omit<GetFormModel<UserModel>, 'roles'> & {
   roleIds: string[];
 };

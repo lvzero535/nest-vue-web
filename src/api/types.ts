@@ -19,8 +19,6 @@ export interface ListResult<T = unknown> {
   list: T[];
 }
 
-export type ResListResult<T = unknown> = ResResult<ListResult<T>>;
-
 export interface ResResult<T = unknown> {
   code?: number;
   data: T;

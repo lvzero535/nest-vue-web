@@ -11,9 +11,13 @@ export default function permissionGuard(router: Router) {
       const user = useUserStore();
       if (user.token) {
         if (user.menus?.length === 0) {
-          await user.createMenus();
+          await user.getUserInfo();
+          // 刚添加的路由，还没有添加到路由中，需要重新跳转一次
+          next({ ...to, replace: true });
+        } else {
+          next();
         }
-        next();
+        console.log(router.hasRoute(to.path));
       } else {
         next({ path: LoginRoute.path, query: { redirect: to.path } });
       }

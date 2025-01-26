@@ -10,13 +10,14 @@ export enum MenuTypeEnum {
 }
 
 export interface MenuModel extends BaseModel {
+  key?: string;
   name: string;
   type: MenuTypeEnum;
   path?: string;
   icon?: string;
   order?: number;
   status?: boolean;
-  parent?: MenuModel;
+  parentId?: string;
   permission?: string;
   children?: MenuModel[];
 }

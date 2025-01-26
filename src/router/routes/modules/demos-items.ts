@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
 
-export const demoItemsRoute: RouteRecordRaw = {
+export default {
   path: '/demos/item',
   redirect: '/demos/item/item-1',
   meta: {
@@ -38,4 +38,4 @@ export const demoItemsRoute: RouteRecordRaw = {
       ],
     },
   ],
-};
+} as RouteRecordRaw;

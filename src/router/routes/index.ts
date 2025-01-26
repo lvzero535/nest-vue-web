@@ -1,61 +1,16 @@
 import { RouteRecordRaw } from 'vue-router';
 import { outsideLayoutRoutes } from './outsideLayout';
-import { diagram, welcome } from './dashboard';
-import { basicFormRoute, dynamicFormRoute, modal } from './demos';
-import { demoItemsRoute } from './demos-items';
-import { deptRoute, menuRoute, roleRoute, userRoute } from './system';
-import { componentRoutes } from './components';
+import { DEFAULT_ROUTE } from './constantRoutes';
 
 export const rootRoute: RouteRecordRaw = {
   path: '/',
-  redirect: welcome.path,
+  redirect: DEFAULT_ROUTE,
   component: () => import('@/layout/index.vue'),
   meta: {
     title: '所有导航',
     icon: 'ant-design:cluster-outlined',
   },
-  children: [
-    {
-      path: '/dashboard',
-      redirect: welcome.path,
-      meta: {
-        title: 'Dashboard',
-        icon: 'ant-design:home-outlined',
-      },
-      children: [welcome, diagram],
-    },
-    {
-      path: '/demos',
-      redirect: modal.path,
-      meta: {
-        title: 'Demos演示',
-        icon: 'ant-design:account-book-filled',
-      },
-      children: [
-        modal,
-        {
-          path: '/demos/form',
-          redirect: basicFormRoute.path,
-          meta: {
-            title: 'Form演示',
-            icon: 'ant-design:account-book-outlined',
-          },
-          children: [basicFormRoute, dynamicFormRoute],
-        },
-        ...componentRoutes,
-        demoItemsRoute,
-      ],
-    },
-    {
-      path: '/system',
-      redirect: userRoute.path,
-      meta: {
-        title: '系统管理',
-        icon: 'ep:setting',
-      },
-      children: [userRoute, roleRoute, deptRoute, menuRoute],
-    },
-  ],
+  children: [],
 };
 
 export const routes: RouteRecordRaw[] = [
