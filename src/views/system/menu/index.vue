@@ -128,14 +128,14 @@ const editMenuHandler = async (record: MenuModel) => {
   }
 };
 
-const addMenuHandler = (title = '添加菜单', deptInfo?: MenuModel) => {
+const addMenuHandler = (title = '添加菜单', menuInfo?: MenuModel) => {
   const formRef = ref<InstanceType<typeof Form>>();
   open({
     title: title,
     content: h(Form),
     contentProps: {
       ref: formRef,
-      deptInfo,
+      menuInfo,
     },
     onOk: async () => {
       const result = await formRef.value?.onSubmit();

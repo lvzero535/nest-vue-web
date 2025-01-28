@@ -4,6 +4,7 @@ import router from '@/router';
 import { RouteRecordRaw } from 'vue-router';
 import { constantRoutes } from './routes/constantRoutes';
 import { rootRoute } from './routes';
+import { asyncDemoMenus } from './routes/system';
 
 /**
  * 根据路径获取路由对象
@@ -55,7 +56,8 @@ export function menusToRoutes(menus: MenuModel[]): RouteRecordRaw[] {
 }
 
 export function generateDynamicRoutes(menus: MenuModel[]) {
-  const asyncRoutes = menusToRoutes(menus);
+  const isDemo = false;
+  const asyncRoutes = isDemo ? asyncDemoMenus : menusToRoutes(menus);
   const routes = [...constantRoutes, ...asyncRoutes];
   rootRoute.children = routes;
   router.addRoute(rootRoute);

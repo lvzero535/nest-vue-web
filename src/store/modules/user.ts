@@ -4,6 +4,8 @@ import { ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 import { AccountInfoModel, getUserMenus, getUserProfile } from '@/api/user';
 import { generateDynamicRoutes } from '@/router/helper';
+import { isEmpty } from 'lodash-es';
+import { getAllPermissions } from '@/api/menu';
 
 export const useUserStore = defineStore(
   'user',
@@ -11,13 +13,24 @@ export const useUserStore = defineStore(
     const menus = ref<RouteRecordRaw[]>([]);
     const userInfo = ref<AccountInfoModel>();
     const token = ref<string>('');
+    const permissions = ref<string[]>([]);
 
     const setToken = (val: string) => {
       token.value = val;
     };
 
+    const getPermissions = async () => {
+      if (isEmpty(permissions.value)) {
+        const resp = await getAllPermissions();
+        if (resp.success) {
+          permissions.value = resp.data;
+        }
+      }
+    };
+
     const reset = () => {
       menus.value = [];
+      permissions.value = [];
       token.value = '';
       userInfo.value = undefined;
     };
@@ -28,6 +41,7 @@ export const useUserStore = defineStore(
     };
 
     const getUserInfo = async () => {
+      getPermissions();
       const [profileResp, menusResp] = await Promise.all([
         getUserProfile(),
         getUserMenus(),
@@ -42,6 +56,7 @@ export const useUserStore = defineStore(
     return {
       menus,
       token,
+      permissions,
       userInfo,
       setToken,
       reset,
@@ -51,7 +66,7 @@ export const useUserStore = defineStore(
   },
   {
     persist: {
-      pick: ['token'],
+      pick: ['token', 'permissions'],
     },
   },
 );

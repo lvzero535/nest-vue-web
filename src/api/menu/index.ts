@@ -41,3 +41,14 @@ export function getMenuById(id: string) {
     method: 'get',
   });
 }
+
+/**
+ * 获取权限列表
+ * @returns string[]
+ */
+export function getAllPermissions() {
+  return request<string[]>({
+    url: `/menu/permissions`,
+    method: 'get',
+  });
+}

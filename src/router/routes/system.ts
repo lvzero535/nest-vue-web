@@ -8,6 +8,7 @@ export const userRoute: RouteRecordRaw = {
     icon: 'ant-design:user-outlined',
   },
 };
+
 export const roleRoute: RouteRecordRaw = {
   path: '/system/role',
   component: () => import('@/views/system/role/index.vue'),
@@ -34,3 +35,15 @@ export const menuRoute: RouteRecordRaw = {
     icon: 'ant-design:cluster-outlined',
   },
 };
+
+export const asyncDemoMenus: RouteRecordRaw[] = [
+  {
+    path: '/system',
+    redirect: userRoute.path,
+    meta: {
+      title: '系统管理',
+      icon: 'ant-design:security-scan-filled',
+    },
+    children: [userRoute, roleRoute, deptRoute, menuRoute],
+  },
+];
