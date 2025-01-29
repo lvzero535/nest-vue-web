@@ -2,14 +2,20 @@
   <div class="role-wrap">
     <XTable @register="register" :fetch="getRoleData">
       <template #name="{ value, record }">
-        <a @click="editRoleHandler(record as RoleModel)">{{ value }}</a>
+        <Button
+          type="link"
+          :disabled="isAdmin(record)"
+          @click="editRoleHandler(record as RoleModel)"
+          >{{ value }}</Button
+        >
       </template>
       <template #options="{ record }">
         <Popconfirm
           title="确定删除角色？"
           @confirm="onDelete([(record as RoleModel).id!])"
         >
-          <a>删除</a>
+          <a v-if="!isAdmin(record)">删除</a>
+          <span v-else>-</span>
         </Popconfirm>
       </template>
     </XTable>
@@ -17,7 +23,7 @@
 </template>
 <script lang="ts" setup>
 import { getRoleList, RoleModel, deleteRole, getRoleById } from '@/api/role';
-import { Popconfirm } from 'ant-design-vue';
+import { Popconfirm, Button } from 'ant-design-vue';
 import { XTable, XTypeButtonEnum, useTable } from '@/components/table';
 import { h, ref } from 'vue';
 import Form from './Form.vue';
@@ -27,7 +33,7 @@ import { PageQuery } from '@/api/types';
 const { open } = useModal();
 
 const searchContent = ref('');
-
+const isAdmin = (record: RoleModel) => record.value === 'admin';
 const { register, loadData } = useTable({
   columns: [
     {
@@ -62,7 +68,7 @@ const { register, loadData } = useTable({
     },
   ],
   selection: {
-    disableSelect: (record) => record.name === 'super',
+    disableSelect: isAdmin,
   },
   toolbar: {
     search: {
@@ -123,7 +129,7 @@ const openRoleModal = (title: string, roleInfo?: RoleModel) => {
   });
 };
 
-const onDelete = async (ids: string[]) => {
+const onDelete = async (ids: number[]) => {
   const resp = await deleteRole(ids);
   if (resp.success) {
     loadData();

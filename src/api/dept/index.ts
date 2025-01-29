@@ -17,7 +17,7 @@ export function addDept(data: DeptModelForm) {
     data,
   });
 }
-export function editDept(id: string, data: DeptModelForm) {
+export function editDept(id: number, data: DeptModelForm) {
   return request<ListResult<DeptModel>>({
     url: `/dept/${id}`,
     method: 'put',

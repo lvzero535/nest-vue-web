@@ -93,9 +93,9 @@ type TreeData = TreeProps['treeData'];
 const treeData = ref<TreeData>([]);
 
 function getCheckedKeys(
-  checkedList: string[],
+  checkedList: number[],
   treeData: TreeData,
-  total: string[] = [],
+  total: number[] = [],
 ) {
   return treeData!.reduce((pre, cur) => {
     // 父点不用管，子点需要处理，当前所有子节点选中后，父节点也会被选中

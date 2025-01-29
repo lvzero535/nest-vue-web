@@ -3,6 +3,8 @@ import { MenuModel, MenuModelForm } from './types';
 import { ListResult } from '../types';
 export * from './types';
 
+export const MORE_MENU_SEPARATE = ',';
+
 export function getMenuList() {
   return request<ListResult<MenuModel>>({
     url: '/menu',
@@ -10,14 +12,22 @@ export function getMenuList() {
   });
 }
 
-export function addMenu(data: MenuModelForm) {
+export function addMenu(dt: MenuModelForm) {
+  const data = {
+    ...dt,
+    permission: dt.permission?.join(MORE_MENU_SEPARATE) || '',
+  };
   return request<ListResult<MenuModel>>({
     url: '/menu',
     method: 'post',
     data,
   });
 }
-export function editMenu(id: string, data: MenuModelForm) {
+export function editMenu(id: number, dt: MenuModelForm) {
+  const data = {
+    ...dt,
+    permission: dt.permission?.join(MORE_MENU_SEPARATE) || '',
+  };
   return request<ListResult<MenuModel>>({
     url: `/menu/${id}`,
     method: 'put',
@@ -25,7 +35,7 @@ export function editMenu(id: string, data: MenuModelForm) {
   });
 }
 
-export function deleteMenu(ids: string[]) {
+export function deleteMenu(ids: number[]) {
   return request({
     url: `/menu`,
     method: 'delete',
@@ -35,7 +45,7 @@ export function deleteMenu(ids: string[]) {
   });
 }
 
-export function getMenuById(id: string) {
+export function getMenuById(id: number) {
   return request<MenuModel>({
     url: `/menu/${id}`,
     method: 'get',

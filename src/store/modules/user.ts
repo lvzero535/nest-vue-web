@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
 import { store } from '@/store';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 import { AccountInfoModel, getUserMenus, getUserProfile } from '@/api/user';
 import { generateDynamicRoutes } from '@/router/helper';
 import { isEmpty } from 'lodash-es';
 import { getAllPermissions } from '@/api/menu';
+
+const demoAccount = '__inner_demo_account__';
 
 export const useUserStore = defineStore(
   'user',
@@ -14,6 +16,9 @@ export const useUserStore = defineStore(
     const userInfo = ref<AccountInfoModel>();
     const token = ref<string>('');
     const permissions = ref<string[]>([]);
+    const isDemoMode = computed(() => {
+      return userInfo.value?.username === demoAccount;
+    });
 
     const setToken = (val: string) => {
       token.value = val;
@@ -62,6 +67,8 @@ export const useUserStore = defineStore(
       reset,
       logout,
       getUserInfo,
+
+      isDemoMode,
     };
   },
   {

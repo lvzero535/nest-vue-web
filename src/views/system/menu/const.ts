@@ -1,5 +1,7 @@
 import { MenuTypeEnum } from '@/api/menu';
 
+export const ROOT_MENU_VALUE = -1;
+
 export const MenuType: Record<MenuTypeEnum, string> = {
   [MenuTypeEnum.BUTTON]: '按钮',
   [MenuTypeEnum.CATALOG]: '目录',

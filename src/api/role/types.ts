@@ -11,5 +11,5 @@ export interface RoleModel extends BaseModel {
 // export type RoleFormModel = GetFormModel<RoleModel>;
 
 export type RoleFormModel = Omit<GetFormModel<RoleModel>, 'menus'> & {
-  menuIds: string[];
+  menuIds: number[];
 };

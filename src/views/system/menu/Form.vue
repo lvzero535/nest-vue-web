@@ -31,9 +31,6 @@
         tree-node-filter-prop="label"
       >
       </TreeSelect>
-      <div v-show="false" class="mt-4">
-        <Tag>当前父级路径：{{ pathPrefix }}</Tag>
-      </div>
     </Form.Item>
     <Form.Item
       v-if="formState.type === MenuTypeEnum.BUTTON"
@@ -42,6 +39,7 @@
       name="permission"
     >
       <Select
+        mode="multiple"
         v-model:value="formState.permission"
         :options="permissionOptions"
       ></Select>
@@ -92,9 +90,9 @@ import {
   TreeSelect,
   RadioGroup,
   Radio,
-  Tag,
   TreeSelectProps,
   Select,
+  Modal,
 } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/es/form';
 import { IconPicker } from '@/components/icon';
@@ -105,10 +103,11 @@ import {
   MenuTypeEnum,
   MenuModelForm,
   MenuModel,
+  MORE_MENU_SEPARATE,
 } from '@/api/menu';
-import { MenuType, permissionTextMap } from './const';
+import { MenuType, permissionTextMap, ROOT_MENU_VALUE } from './const';
 import { traverseTree } from '@/utils/tree';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isEmpty } from 'lodash-es';
 import { SelectProps } from 'ant-design-vue/es/vc-select';
 import { useUserStore } from '@/store/modules/user';
 const userStore = useUserStore();
@@ -122,17 +121,16 @@ const props = defineProps({
 
 const formRef = ref<FormInstance>();
 const treeData = ref<MenuModel[]>([]);
-const pathPrefix = ref<string>(props.menuInfo?.parentId ?? '/');
 const permissionOptions = ref<SelectProps['options']>([]);
 
 const formState = reactive<MenuModelForm>({
   name: props.menuInfo?.name || '',
-  parentId: props.menuInfo?.parentId ?? '-1',
+  parentId: props.menuInfo?.parentId ?? ROOT_MENU_VALUE,
   type: props.menuInfo?.type || MenuTypeEnum.CATALOG,
   order: props.menuInfo?.order || 0,
-  path: props.menuInfo?.path,
+  path: props.menuInfo?.path || '/',
   icon: props.menuInfo?.icon,
-  permission: props.menuInfo?.permission,
+  permission: props.menuInfo?.permission ? [props.menuInfo?.permission] : [],
   status: props.menuInfo?.status ?? true,
 });
 
@@ -149,13 +147,21 @@ const rules: Record<string, Rule[]> = {
 watch(
   () => formState.permission,
   (val) => {
-    formState.name = '';
-    if (val) {
-      const name = val.split(':').pop()?.toLowerCase();
-      if (!name) {
+    if (val && formState.type === MenuTypeEnum.BUTTON) {
+      formState.name = '';
+      const names = val
+        .map((it) => {
+          const name = it.split(':').pop()?.toLowerCase();
+          if (!name) {
+            return;
+          }
+          return permissionTextMap[name];
+        })
+        .filter(Boolean);
+      if (isEmpty(names)) {
         return;
       }
-      formState.name = permissionTextMap[name];
+      formState.name = names.join(MORE_MENU_SEPARATE);
     }
   },
 );
@@ -178,14 +184,14 @@ const generatePermissionOptions = (node: MenuModel) => {
         };
       });
 
-    const isSelected = permissionOptions.value.find(
-      (item) => item.value === formState.permission,
+    const isSelected = permissionOptions.value.find((item) =>
+      formState.permission?.includes(item.value),
     );
     if (!isSelected) {
-      formState.permission = permissionOptions.value[0].value;
+      formState.permission = [permissionOptions.value[0].value];
     }
   } else {
-    formState.permission = '';
+    formState.permission = [];
   }
 };
 
@@ -195,18 +201,18 @@ const onSelectedNode: TreeSelectProps['onSelect'] = (
 ) => {
   generatePermissionOptions(node);
   console.log(value, node);
-  if (value === '-1') {
-    pathPrefix.value = '/';
+  if (value === ROOT_MENU_VALUE) {
+    formState.path = '/';
   } else {
-    pathPrefix.value = node?.path || '/';
+    formState.path = node?.path || '/';
   }
 };
 
 const onTypeChange = () => {
   if (formState.type === MenuTypeEnum.BUTTON) {
-    formState.parentId = '';
+    formState.parentId = undefined;
   } else {
-    formState.parentId = '-1';
+    formState.parentId = ROOT_MENU_VALUE;
   }
 };
 
@@ -238,7 +244,7 @@ async function getMenuData() {
   if (resp.success) {
     treeData.value = [
       {
-        id: '-1',
+        id: ROOT_MENU_VALUE,
         name: '根目录',
         type: MenuTypeEnum.CATALOG,
         path: '/',
@@ -267,8 +273,20 @@ const onSubmit = async () => {
   try {
     await formRef.value?.validate();
     if (props.menuInfo) {
-      const resp = await editMenu(props.menuInfo.id!, formState);
-      return resp.success;
+      return new Promise<boolean>((resolve) => {
+        Modal.confirm({
+          title: '提示',
+          closable: true,
+          content: '确认修改菜单吗？',
+          async onOk() {
+            const resp = await editMenu(props.menuInfo.id!, formState);
+            resolve(resp.success);
+          },
+          onCancel() {
+            resolve(false);
+          },
+        });
+      });
     } else {
       const resp = await addMenu(formState);
       return resp.success;

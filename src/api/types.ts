@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 
 export interface BaseModel {
-  id?: string;
+  id?: number;
   createAt?: string;
   updateAt?: string;
 }

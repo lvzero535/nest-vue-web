@@ -55,9 +55,12 @@ const { register, loadData } = useTable({
       },
     },
     {
-      title: '路由',
+      title: '路由/权限',
       dataIndex: 'path',
       width: 200,
+      cellContent: (value: string, record: MenuModel) => {
+        return record.type === MenuTypeEnum.BUTTON ? record.permission! : value;
+      },
     },
     {
       title: '图标',
@@ -147,7 +150,7 @@ const addMenuHandler = (title = '添加菜单', menuInfo?: MenuModel) => {
   });
 };
 
-const onDelete = async (ids: string[]) => {
+const onDelete = async (ids: number[]) => {
   const resp = await deleteMenu(ids);
   if (resp.success) {
     loadData();

@@ -75,7 +75,7 @@ export async function request<T>(
       Modal.error({
         title: '错误提示',
         closable: true,
-        content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
+        content: CODE_TO_MSG[code!] || msg || CODE_TO_MSG[500],
       });
     }
   }

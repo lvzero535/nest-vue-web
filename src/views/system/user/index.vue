@@ -9,7 +9,8 @@
           title="确定删除用户？"
           @confirm="onDelete([(record as UserModel).id!])"
         >
-          <a>删除</a>
+          <a v-if="!isAdmin(record)">删除</a>
+          <span v-else>-</span>
         </Popconfirm>
       </template>
     </XTable>
@@ -29,7 +30,7 @@ import { isEmpty } from 'lodash-es';
 const { open } = useModal();
 
 const searchContent = ref('');
-
+const isAdmin = (record: UserModel) => record.username === 'admin';
 const { register, loadData } = useTable({
   columns: [
     {
@@ -73,7 +74,7 @@ const { register, loadData } = useTable({
     },
   ],
   selection: {
-    disableSelect: (record) => record.username === 'admin',
+    disableSelect: isAdmin,
   },
   toolbar: {
     search: {
@@ -134,7 +135,7 @@ const openUserModal = (title: string, userInfo?: UserModel) => {
   });
 };
 
-const onDelete = async (ids: string[]) => {
+const onDelete = async (ids: number[]) => {
   const resp = await deleteUser(ids);
   if (resp.success) {
     loadData();

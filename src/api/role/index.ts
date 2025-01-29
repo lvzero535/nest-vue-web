@@ -19,13 +19,13 @@ export function addRole(data: RoleFormModel) {
   });
 }
 
-export function getRoleById(id: string) {
+export function getRoleById(id: number) {
   return request<RoleModel>({
     url: `/role/${id}`,
     method: 'get',
   });
 }
-export function updateRole(id: string, data: RoleFormModel) {
+export function updateRole(id: number, data: RoleFormModel) {
   return request({
     url: `/role/${id}`,
     method: 'put',
@@ -33,7 +33,7 @@ export function updateRole(id: string, data: RoleFormModel) {
   });
 }
 
-export function deleteRole(ids: string[]) {
+export function deleteRole(ids: number[]) {
   return request({
     url: `/role`,
     method: 'delete',

@@ -17,11 +17,15 @@ export interface MenuModel extends BaseModel {
   icon?: string;
   order?: number;
   status?: boolean;
-  parentId?: string;
+  parentId?: number;
   permission?: string;
   children?: MenuModel[];
 }
 
-export type MenuModelForm = Omit<GetFormModel<MenuModel>, 'parent'> & {
-  parentId?: string;
+export type MenuModelForm = Omit<
+  GetFormModel<MenuModel>,
+  'parent' | 'permission'
+> & {
+  parentId?: number;
+  permission?: string[];
 };

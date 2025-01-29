@@ -20,13 +20,13 @@ export function addUser(data: UserFormModel) {
   });
 }
 
-export function getUserById(id: string) {
+export function getUserById(id: number) {
   return request<UserModel>({
     url: `/user/${id}`,
     method: 'get',
   });
 }
-export function updateUser(id: string, data: UserFormModel) {
+export function updateUser(id: number, data: UserFormModel) {
   return request({
     url: `/user/${id}`,
     method: 'put',
@@ -34,7 +34,7 @@ export function updateUser(id: string, data: UserFormModel) {
   });
 }
 
-export function deleteUser(ids: string[]) {
+export function deleteUser(ids: number[]) {
   return request({
     url: `/user`,
     method: 'delete',

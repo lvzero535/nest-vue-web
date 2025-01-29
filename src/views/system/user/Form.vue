@@ -9,7 +9,7 @@
     autocomplete="off"
   >
     <Form.Item label="用户名" name="username">
-      <Input v-model:value="formState.username" />
+      <Input :disabled="userInfo.id === 1" v-model:value="formState.username" />
     </Form.Item>
 
     <Form.Item label="密码" name="password">
@@ -17,8 +17,9 @@
     </Form.Item>
     <Form.Item label="角色" name="roleIds">
       <Select
-        mode="tags"
+        mode="multiple"
         :options="options"
+        :disabled="userInfo.id === 1"
         placeholder="Please select"
         v-model:value="formState.roleIds"
       />
@@ -59,7 +60,7 @@ const rules: Record<keyof UserFormModel, Rule[]> = {
   roleIds: [{ required: true, message: '请选择角色' }],
 };
 
-const options = ref<{ label: string; value: string }[]>([]);
+const options = ref<{ label: string; value: number }[]>([]);
 const getRoleData = async () => {
   const resp = await getRoleList({
     page: 1,
