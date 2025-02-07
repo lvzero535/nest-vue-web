@@ -1,6 +1,6 @@
 import { InjectionKey } from 'vue';
-import { LdModalProvideRef } from './types';
+import { XModalProvideRef } from './types';
 
-export const LD_MODAL_PROVIDER_TOKEN: InjectionKey<LdModalProvideRef> = Symbol(
-  'LD_MODAL_PROVIDER_TOKEN',
+export const XMODAL_PROVIDER_TOKEN: InjectionKey<XModalProvideRef> = Symbol(
+  'XMODAL_PROVIDER_TOKEN',
 );

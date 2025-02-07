@@ -33,6 +33,8 @@ service.interceptors.response.use(
   },
 );
 
+let loginModal: SafeAny;
+
 export default service;
 
 export async function request<T>(config: RequestOptions): Promise<ResResult<T>>;
@@ -58,7 +60,8 @@ export async function request<T>(
   if (!response.data.success) {
     if (TOKEN_INVALID_CODE === code) {
       const userStore = useUserStoreWithOut();
-      Modal.confirm({
+      loginModal?.destroy();
+      loginModal = Modal.confirm({
         title: '警告',
         closable: true,
         content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],

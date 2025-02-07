@@ -9,7 +9,10 @@
     autocomplete="off"
   >
     <Form.Item label="用户名" name="username">
-      <Input :disabled="userInfo.id === 1" v-model:value="formState.username" />
+      <Input
+        :disabled="userInfo?.id === 1"
+        v-model:value="formState.username"
+      />
     </Form.Item>
 
     <Form.Item label="密码" name="password">
@@ -19,7 +22,7 @@
       <Select
         mode="multiple"
         :options="options"
-        :disabled="userInfo.id === 1"
+        :disabled="userInfo?.id === 1"
         placeholder="Please select"
         v-model:value="formState.roleIds"
       />

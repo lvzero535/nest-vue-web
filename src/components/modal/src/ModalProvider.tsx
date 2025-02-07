@@ -1,19 +1,18 @@
-import { Modal, Spin, SpinProps } from 'ant-design-vue';
+import { Spin, SpinProps } from 'ant-design-vue';
 import { cloneVNode, defineComponent, isVNode, provide, shallowRef } from 'vue';
-import { LdModalProvideRef, ModalExtra } from './types';
+import { XModalProvideRef, ModalExtra } from './types';
 import { isFunction, isObject } from 'lodash-es';
-import { LD_MODAL_PROVIDER_TOKEN } from './token';
+import { XMODAL_PROVIDER_TOKEN } from './token';
 import { uniqueId } from '@/utils/util';
+import DraggerModal from './DraggerModal.vue';
 
 export default defineComponent({
-  name: 'LdModalProvider',
+  name: 'XModalProvider',
   setup(_, { slots, expose }) {
     const modals = shallowRef<ModalExtra[]>([]);
 
     const getCurrentIndex = (props: ModalExtra) => {
-      return modals.value.findIndex(
-        (item) => item.key === props.key || item.title === props.title,
-      );
+      return modals.value.findIndex((item) => item.key === props.key);
     };
 
     const open = (props: ModalExtra) => {
@@ -37,7 +36,7 @@ export default defineComponent({
       if (currentIndex > -1) {
         tempModals.splice(currentIndex, 1, props);
       } else {
-        props.key = props.key ?? uniqueId('ld-modal');
+        props.key = props.key ?? uniqueId('x-modal');
         tempModals.push(props);
       }
 
@@ -53,12 +52,12 @@ export default defineComponent({
       }
     };
 
-    const apis: LdModalProvideRef = {
+    const apis: XModalProvideRef = {
       open,
       update,
     };
 
-    provide(LD_MODAL_PROVIDER_TOKEN, apis);
+    provide(XMODAL_PROVIDER_TOKEN, apis);
     expose(apis);
 
     return () => {
@@ -83,15 +82,23 @@ export default defineComponent({
         const mergedModalProps = {
           'onUpdate:open': updateOpen,
           onOk: async (e: MouseEvent) => {
-            item._isSpin && (spinProps.spinning = true);
-            _isConfirmLoading &&
+            if (item._isSpin) {
+              spinProps.spinning = true;
+            }
+
+            if (_isConfirmLoading) {
               update({ ...item, spin: spinProps, confirmLoading: true });
+            }
 
             const result = await onOk?.(e);
 
-            item._isSpin && (spinProps.spinning = false);
-            _isConfirmLoading &&
+            if (item._isSpin) {
+              spinProps.spinning = false;
+            }
+
+            if (_isConfirmLoading) {
               update({ ...item, spin: spinProps, confirmLoading: false });
+            }
 
             if (result === true) {
               updateOpen(false);
@@ -106,7 +113,7 @@ export default defineComponent({
             : content;
 
         return (
-          <Modal
+          <DraggerModal
             {...modalProps}
             {...mergedModalProps}
             destroyOnClose={destroyOnClose}
@@ -118,10 +125,11 @@ export default defineComponent({
                 return <>{item.title}</>;
               },
             }}
-          </Modal>
+          </DraggerModal>
         );
       });
       return (
+        // @ts-expect-error TODO 不在Vue中引入h函数会报错 Using JSX fragments requires fragment factory 'h' to be in scope, but it could not be found.
         <>
           {slots.default?.()}
           {modalList}

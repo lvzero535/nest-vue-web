@@ -1,14 +1,14 @@
 import { inject } from 'vue';
-import LdModalProvider from './src/ModalProvider';
-import { LD_MODAL_PROVIDER_TOKEN } from './src/token';
+import XModalProvider from './src/ModalProvider';
+import { XMODAL_PROVIDER_TOKEN } from './src/token';
 
-// 导出一个函数，用于获取 LdModalProvider 的实例
+// 导出一个函数，用于获取 XModalProvider 的实例
 export function useModal() {
-  const LdModalProvider = inject(LD_MODAL_PROVIDER_TOKEN);
-  if (!LdModalProvider) {
+  const XModalProvider = inject(XMODAL_PROVIDER_TOKEN);
+  if (!XModalProvider) {
     throw new Error('useModal() is called without provider.');
   }
-  return LdModalProvider;
+  return XModalProvider;
 }
 
-export { LdModalProvider };
+export { XModalProvider };
