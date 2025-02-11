@@ -1,5 +1,5 @@
 <template>
-  <IconPreview :show-tooltip="true" @click="onClick" />
+  <IconPreview :show-tooltip="false" @click="onClick" />
 </template>
 <script setup lang="ts">
 import { IconPreview } from '@/components/icon';

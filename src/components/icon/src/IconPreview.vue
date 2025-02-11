@@ -1,42 +1,48 @@
 <template>
   <div class="icons-wrapper">
     <Tabs :size="cSize" v-model:activeKey="activeKey">
-      <Tabs.TabPane v-for="item in tabs" :key="item.key" :tab="item.tab">
-        <div class="icons-container" v-if="item.key === activeKey">
-          <div class="search-wrap">
-            <Input
-              :size="cSize"
-              v-model:value="searchContent"
-              :placeholder="item.placeholder"
-              allow-clear
-            />
-          </div>
-
-          <div class="icons-content">
-            <template
-              v-for="icon in filterIcons(item.icons, searchContent)"
-              :key="icon"
-            >
-              <Tooltip :title="showTooltip ? icon : ''">
-                <span @click="onClick(icon)">
-                  <Icon class="ml-4 mb-4 icon-item" :size="size" :icon="icon" />
-                </span>
-              </Tooltip>
-            </template>
-          </div>
-        </div>
+      <Tabs.TabPane v-for="(_, key) in iconsMap" :key="key" :tab="key">
       </Tabs.TabPane>
     </Tabs>
+    <div class="icons-container">
+      <div class="search-wrap">
+        <Input :size="cSize" v-model:value="searchContent" allow-clear />
+      </div>
+
+      <div class="icons-content">
+        <RecycleScroller
+          :items="showIcons"
+          :item-size="size"
+          :buffer="100"
+          class="icons-list"
+          :grid-items="gridItems"
+          key-field="icon"
+          :item-secondary-size="size"
+        >
+          <template #default="{ item }">
+            <Tooltip :title="showTooltip ? item.icon : ''">
+              <span @click="onClick(item.icon)">
+                <Icon
+                  class="ml-4 mb-4 icon-item"
+                  :size="size"
+                  :icon="item.icon"
+                />
+              </span>
+            </Tooltip>
+          </template>
+        </RecycleScroller>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { Tabs, Input, Tooltip } from 'ant-design-vue';
 import { SizeType } from 'ant-design-vue/es/config-provider';
 import { Icon } from '@/components/icon';
-import antDesign from '@iconify-json/ant-design/icons.json';
-import ep from '@iconify-json/ep/icons.json';
-import { PropType, ref, watch } from 'vue';
-// import { RecycleScroller } from 'vue-virtual-scroller';
+import { computed, PropType, ref, watch } from 'vue';
+import { RecycleScroller } from 'vue-virtual-scroller';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+import { icons, setupIcons } from './icons.data';
 
 defineProps({
   cSize: {
@@ -45,7 +51,11 @@ defineProps({
   },
   size: {
     type: Number,
-    default: 48,
+    default: 120,
+  },
+  gridItems: {
+    type: Number,
+    default: 10,
   },
   showTooltip: {
     type: Boolean,
@@ -54,49 +64,45 @@ defineProps({
 });
 
 const emits = defineEmits(['click']);
+
+setupIcons();
+
 const getIcons = (obj: { icons: object; prefix: string }) => {
-  return Object.keys(obj.icons).map((icon) => obj.prefix + ':' + icon);
+  return Object.keys(obj.icons).map((icon) => ({
+    icon: obj.prefix + ':' + icon,
+  }));
 };
 
-const antDesignIcons = getIcons(antDesign);
-const epIcons = getIcons(ep);
+const iconsMap = Object.entries(icons).reduce(
+  (acc, [key, value]) => {
+    acc[key] = getIcons(value);
+    return acc;
+  },
+  {
+    全部: Object.values(icons)
+      .map((item) => getIcons(item))
+      .flat(),
+  } as Record<string, { icon: string }[]>,
+);
 
 const searchContent = ref('');
-const activeKey = ref('all');
+const activeKey = ref('全部');
 
 watch(activeKey, () => {
   searchContent.value = '';
 });
 
-const filterIcons = (icons: string[], content: string) => {
-  if (!content) return icons;
-  return icons.filter((icon) => icon.split(':')[1].includes(content));
-};
+const showIcons = computed(() => {
+  const icons = iconsMap[activeKey.value];
+  if (!searchContent.value) return icons;
+  return icons.filter((item) =>
+    item.icon.split(':')[1].includes(searchContent.value),
+  );
+});
 
 const onClick = (icon: string) => {
   emits('click', icon);
 };
-
-const tabs = [
-  {
-    tab: '全部' + `(${antDesignIcons.length + epIcons.length})`,
-    icons: [...antDesignIcons, ...epIcons],
-    placeholder: '从全部图标中搜索',
-    key: 'all',
-  },
-  {
-    tab: 'Ant Design' + `(${antDesignIcons.length})`,
-    icons: antDesignIcons,
-    placeholder: '从 Ant Design 图标中搜索',
-    key: 'ant-design',
-  },
-  {
-    tab: 'Element Plus' + `(${epIcons.length})`,
-    icons: epIcons,
-    placeholder: '从 Element Plus 图标中搜索',
-    key: 'element-plus',
-  },
-];
 </script>
 
 <style lang="less" scoped>
@@ -104,25 +110,19 @@ const tabs = [
   overflow: auto;
   height: 100%;
 
-  .ant-tabs {
-    height: 100%;
-
-    :deep(.ant-tabs-content-holder) {
-      .ant-tabs-content {
-        height: 100%;
-      }
-    }
-  }
-
   .icons-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 62px);
 
     .icons-content {
       flex: 1;
       flex-wrap: wrap;
       overflow: auto;
+
+      .icons-list {
+        height: 100%;
+      }
     }
   }
 

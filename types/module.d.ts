@@ -1,4 +1,4 @@
 declare module 'virtual:*' {
-  const result: any;
+  const result: SafeAny;
   export default result;
 }

@@ -8,7 +8,12 @@
       :getPopupContainer="getPopupContainer"
     >
       <template #content>
-        <IconPreview cSize="small" :size="18" @click="onClick" />
+        <IconPreview
+          cSize="small"
+          :size="38"
+          :grid-items="9"
+          @click="onClick"
+        />
       </template>
       <Input v-model:value="modelValue">
         <template v-if="modelValue" #prefix>
