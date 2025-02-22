@@ -129,7 +129,6 @@ export default defineComponent({
         );
       });
       return (
-        // @ts-expect-error TODO 不在Vue中引入h函数会报错 Using JSX fragments requires fragment factory 'h' to be in scope, but it could not be found.
         <>
           {slots.default?.()}
           {modalList}

@@ -1,0 +1,13 @@
+services:
+  vue3-antdv-admin:
+    # 从当前路径构建镜像
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: x/vue3-vue-web:latest
+    ports:
+      - '80:80'
+    env_file:
+      - .env
+      - .env.production
