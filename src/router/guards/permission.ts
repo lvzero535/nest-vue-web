@@ -17,7 +17,6 @@ export default function permissionGuard(router: Router) {
         } else {
           next();
         }
-        console.log(router.hasRoute(to.path));
       } else {
         next({ path: LoginRoute.path, query: { redirect: to.path } });
       }

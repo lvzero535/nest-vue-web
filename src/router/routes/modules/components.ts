@@ -27,4 +27,19 @@ export const iconsRoute: RouteRecordRaw = {
   },
 };
 
-export const componentRoutes = [modalRoute, componentButtonsRoute, iconsRoute];
+export const layoutRoute: RouteRecordRaw = {
+  path: '/demos/layout',
+  component: () => import('@/views/demos/layout/index.vue'),
+
+  meta: {
+    title: '布局组件',
+    icon: 'ant-design:picture-filled',
+  },
+};
+
+export const componentRoutes = [
+  modalRoute,
+  layoutRoute,
+  componentButtonsRoute,
+  iconsRoute,
+];

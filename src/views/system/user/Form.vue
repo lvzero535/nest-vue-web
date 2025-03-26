@@ -18,6 +18,9 @@
     <Form.Item label="密码" name="password">
       <InputPassword v-model:value="formState.password" />
     </Form.Item>
+    <Form.Item label="部门" name="deptId">
+      <SelectDept v-model:value="formState.deptId" />
+    </Form.Item>
     <Form.Item label="角色" name="roleIds">
       <Select
         mode="multiple"
@@ -41,6 +44,7 @@ import {
 import { Rule } from 'ant-design-vue/es/form';
 import { addUser, updateUser, UserFormModel, UserModel } from '@/api/user';
 import { getRoleList } from '@/api/role';
+import SelectDept from '../dept/SelectDept.vue';
 
 const props = defineProps({
   userInfo: {
@@ -53,11 +57,13 @@ const formRef = ref<FormInstance>();
 
 const formState = reactive<UserFormModel>({
   username: props.userInfo?.username || '',
+  deptId: props.userInfo?.dept.id || -1,
   password: props.userInfo?.password || 'a123456',
   roleIds: props.userInfo?.roles.map((item) => item.id!) || [],
 });
 
 const rules: Record<keyof UserFormModel, Rule[]> = {
+  deptId: [{ required: true, message: '请选择部门' }],
   username: [{ required: true, message: '请输入用户名' }],
   password: [{ required: true, message: '请输入密码' }],
   roleIds: [{ required: true, message: '请选择角色' }],

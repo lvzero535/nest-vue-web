@@ -114,7 +114,7 @@ import {
   InputSearch,
   ButtonProps,
 } from 'ant-design-vue';
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import {
   XToolbarButtons,
   BarDivider,
@@ -132,10 +132,6 @@ const emits = defineEmits<{
 }>();
 
 const searchContent = ref('');
-
-onMounted(() => {
-  console.log('XToolbarButtons onMounted', getId());
-});
 
 const getIcon = (
   button: XToolbarButtonItem,

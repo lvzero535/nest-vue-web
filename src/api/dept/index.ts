@@ -11,16 +11,33 @@ export function getDeptList() {
 }
 
 export function addDept(data: DeptModelForm) {
-  return request<ListResult<DeptModel>>({
+  return request<DeptModel>({
     url: '/dept',
     method: 'post',
     data,
   });
 }
 export function editDept(id: number, data: DeptModelForm) {
-  return request<ListResult<DeptModel>>({
+  return request<DeptModel>({
     url: `/dept/${id}`,
     method: 'put',
     data,
+  });
+}
+
+export function deleteDept(ids: number[]) {
+  return request<DeptModel>({
+    url: `/dept`,
+    method: 'delete',
+    data: {
+      ids,
+    },
+  });
+}
+
+export function getDeptInfo(id: number) {
+  return request<DeptModel>({
+    url: `/dept/${id}`,
+    method: 'get',
   });
 }

@@ -8,6 +8,9 @@
     :labelCol="{ span: 4 }"
     autocomplete="off"
   >
+    <Form.Item label="部门名称" name="name">
+      <Input v-model:value="formState.name" />
+    </Form.Item>
     <Form.Item label="上级部门" name="parentId">
       <TreeSelect
         v-model:value="formState.parentId"
@@ -22,9 +25,6 @@
         tree-node-filter-prop="label"
       >
       </TreeSelect>
-    </Form.Item>
-    <Form.Item label="部门名称" name="name">
-      <Input v-model:value="formState.name" />
     </Form.Item>
   </Form>
 </template>
@@ -57,7 +57,7 @@ const formState = reactive<DeptModelForm>({
 
 const rules: Record<keyof DeptModelForm, Rule[]> = {
   name: [{ required: true, message: '请输入部门名' }],
-  parentId: [{ required: true, message: '请选择父部门' }],
+  parentId: [{ required: false, message: '请选择父级部门' }],
   children: [],
 };
 

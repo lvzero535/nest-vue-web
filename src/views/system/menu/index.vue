@@ -51,7 +51,7 @@ const { register, loadData } = useTable({
           [MenuTypeEnum.BUTTON]: 'red',
           [MenuTypeEnum.MENU]: 'green',
         };
-        return h(Tag, { color: colors[value] }, MenuType[value]);
+        return h(Tag, { color: colors[value] }, () => MenuType[value]);
       },
     },
     {
@@ -79,9 +79,7 @@ const { register, loadData } = useTable({
       dataIndex: 'status',
       width: 100,
       cellContent: (value: boolean) => {
-        return h(
-          Tag,
-          { color: value ? 'green' : 'red' },
+        return h(Tag, { color: value ? 'green' : 'red' }, () =>
           value ? '启用' : '禁用',
         );
       },
