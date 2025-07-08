@@ -4,14 +4,14 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import dynamicImport from 'vite-plugin-dynamic-import';
-import { codeLocationStr } from './build/codeLocateStr';
+// import { codeLocationStr } from './build/codeLocateStr';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    codeLocationStr(),
+    // codeLocationStr(),
     createSvgIconsPlugin({
       iconDirs: [resolve(__dirname, './src/assets/icons')],
       symbolId: 'svg-icon-[dir]-[name]',

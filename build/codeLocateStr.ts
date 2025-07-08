@@ -25,7 +25,7 @@ export function codeLocationStr(): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         if (req.originalUrl === '/api/code-loc') {
-          console.log('请求路径：11', req.originalUrl);
+          // console.log('请求路径：11', req.originalUrl);
           let body = '';
           req.on('data', (chunk) => {
             body += chunk.toString();
@@ -58,10 +58,10 @@ export function codeLocationStr(): Plugin {
       if (id.endsWith('.vue')) {
         const regex = /<template>([\s\S]*)<\/template>/;
         const match = code.match(regex);
-        console.log('id:', id);
+        // console.log('id:', id);
         if (match) {
           const templateContent = match[1].trim();
-          console.log('模板内容：');
+          // console.log('模板内容：');
           // console.log(templateContent);
           const lines = templateContent.split(/\r?\n/).map((line, index) => {
             return line.replace(/<[a-zA-Z][a-zA-Z0-9-.]*[\s|>]?/g, (match) => {
@@ -83,8 +83,8 @@ export function codeLocationStr(): Plugin {
             regex,
             `<template>${lines.join('\n')}</template>`,
           );
-          console.log('添加 code-loc 属性后的模板内容：');
-          console.log(updatedCode);
+          // console.log('添加 code-loc 属性后的模板内容：');
+          // console.log(updatedCode);
           return {
             code: updatedCode,
             map: null,

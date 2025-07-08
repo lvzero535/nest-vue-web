@@ -3,6 +3,7 @@ import { RoleModel } from '../role';
 import { BaseModel, GetFormModel, PageQuery } from '../types';
 
 export interface UserModel extends BaseModel {
+  avatar?: { filename: string };
   username: string;
   password: string;
   roles: RoleModel[];

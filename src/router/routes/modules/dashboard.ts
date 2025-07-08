@@ -18,6 +18,15 @@ export const diagram: RouteRecordRaw = {
   },
 };
 
+export const userProfile: RouteRecordRaw = {
+  path: '/user/profile',
+  component: () => import('@/views/system/user/UserProfile.vue'),
+  meta: {
+    title: '个人中心',
+    icon: 'ant-design:bar-chart-outlined',
+  },
+};
+
 export default {
   path: '/dashboard',
   redirect: welcome.path,
@@ -25,5 +34,5 @@ export default {
     title: 'Dashboard',
     icon: 'ant-design:home-outlined',
   },
-  children: [welcome, diagram],
+  children: [welcome, diagram, userProfile],
 } as RouteRecordRaw;

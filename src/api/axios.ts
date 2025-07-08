@@ -2,7 +2,12 @@ import { useUserStoreWithOut } from '@/store/modules/user';
 import { message, Modal } from 'ant-design-vue';
 import axios, { AxiosResponse } from 'axios';
 import { RequestOptions, ResResult } from './types';
-import { SUCCESS_MSG, CODE_TO_MSG, TOKEN_INVALID_CODE } from './const';
+import {
+  SUCCESS_MSG,
+  CODE_TO_MSG,
+  TOKEN_INVALID_CODE,
+  SUCCESS_CODE,
+} from './const';
 
 const service = axios.create({
   baseURL: '/api',
@@ -89,3 +94,40 @@ export async function request<T>(
 
   return response.data;
 }
+
+// 处理文件上传的函数
+export const uploadFile = async (
+  file: File,
+  data: Record<string, SafeAny> = {},
+  headers: Record<string, SafeAny> = {},
+) => {
+  // 创建 FormData 对象
+  const formData = new FormData();
+
+  formData.append('file', file);
+  Object.keys(data).forEach((key) => {
+    formData.append(key, data[key]);
+  });
+  const userStore = useUserStoreWithOut();
+  // 配置 Axios 请求
+  return axios
+    .post('/api/upload', formData, {
+      headers: {
+        ...headers,
+        'Content-Type': 'multipart/form-data',
+        authorization: `Bearer ${userStore.token}`,
+      },
+    })
+    .then((res) => {
+      if (res.data.code !== SUCCESS_CODE) {
+        Modal.error({
+          title: '错误提示',
+          closable: true,
+          content:
+            CODE_TO_MSG[res.data.code!] || res.data.msg || CODE_TO_MSG[500],
+        });
+        return;
+      }
+      return res.data;
+    });
+};

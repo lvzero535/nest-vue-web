@@ -76,6 +76,8 @@ import { useUserStore } from '@/store/modules/user';
 import { computed } from 'vue';
 import { Dropdown, Menu, MenuProps, Modal } from 'ant-design-vue';
 import Breadcrumb from './Breadcrumb.vue';
+import router from '@/router';
+import { userProfile } from '@/router/routes/modules/dashboard';
 
 const appStore = useAppStore();
 const userStore = useUserStore();
@@ -89,6 +91,9 @@ const userItems = [
     icon: hIcon('ant-design:user-outlined'),
     click() {
       console.log('个人中心11');
+      router.push({
+        path: userProfile.path,
+      });
     },
   },
   {

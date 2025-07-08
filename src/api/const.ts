@@ -1,5 +1,6 @@
 export const SUCCESS_MSG = 'success';
 export const TOKEN_INVALID_CODE = 10002;
+export const SUCCESS_CODE = 200;
 
 export const CODE_TO_MSG: Recordable<string> = {
   200: SUCCESS_MSG,

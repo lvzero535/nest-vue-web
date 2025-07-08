@@ -10,6 +10,14 @@
         <template #username="{ value, record }">
           <a @click="editUserHandler(record as UserModel)">{{ value }}</a>
         </template>
+        <template #avatar="{ value }">
+          <img
+            width="32"
+            height="32"
+            :src="value?.filename ? '/api/' + value.filename : '/vite.svg'"
+            alt="avatar"
+          />
+        </template>
         <template #options="{ record }">
           <Popconfirm
             title="确定删除用户？"
@@ -54,6 +62,12 @@ const { register, loadData } = useTable({
       title: '密码',
       dataIndex: 'password',
       width: 200,
+    },
+    {
+      title: '头像',
+      dataIndex: 'avatar',
+      width: 100,
+      cellContent: 'avatar',
     },
     {
       title: '部门',
