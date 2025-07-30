@@ -64,21 +64,24 @@ export async function request<T>(
 
   if (!response.data.success) {
     if (TOKEN_INVALID_CODE === code) {
-      const userStore = useUserStoreWithOut();
-      loginModal?.destroy();
-      loginModal = Modal.confirm({
-        title: '警告',
-        closable: true,
-        content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
-        okText: '重新登录',
-        cancelText: '取消',
-        async onOk() {
-          userStore.logout();
-        },
-        onCancel() {
-          userStore.setToken('');
-        },
-      });
+      if (!loginModal) {
+        const userStore = useUserStoreWithOut();
+        loginModal = Modal.confirm({
+          title: '警告',
+          closable: true,
+          content: CODE_TO_MSG[code!] || CODE_TO_MSG[500],
+          okText: '重新登录',
+          cancelText: '取消',
+          async onOk() {
+            loginModal = null;
+            userStore.logout();
+          },
+          onCancel() {
+            loginModal = null;
+            userStore.logout();
+          },
+        });
+      }
     } else {
       Modal.error({
         title: '错误提示',

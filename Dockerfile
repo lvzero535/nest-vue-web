@@ -1,6 +1,6 @@
 ARG PROJECT_DIR=/vue-app
 
-FROM node:latest AS builder
+FROM node:22.17-slim AS builder
 ARG PROJECT_DIR
 WORKDIR ${PROJECT_DIR}
 
